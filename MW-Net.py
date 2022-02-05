@@ -28,8 +28,9 @@ from resnet import ResNet32,VNet
 from load_corrupted_data import CIFAR10, CIFAR100
 
 parser = argparse.ArgumentParser(description='PyTorch WideResNet Training')
-parser.add_argument('--dataset', default='cifar10', type=str,
-                    help='dataset (cifar10 [default] or cifar100)')
+parser.add_argument('data_path', type=str, help='Root for the Cifar dataset.')
+parser.add_argument('dataset', type=str, choices=['cifar10', 'cifar100'],
+                    help='Choose between CIFAR-10, CIFAR-100.')
 parser.add_argument('--corruption_prob', type=float, default=0.4,
                     help='label noise')
 parser.add_argument('--corruption_type', '-ctype', type=str, default='unif',
@@ -102,22 +103,22 @@ def build_dataset():
 
     if args.dataset == 'cifar10':
         train_data_meta = CIFAR10(
-            root='../data', train=True, meta=True, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
-            corruption_type=args.corruption_type, transform=train_transform, download=True)
+            root=args.data_path, train=True, meta=True, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
+            corruption_type=args.corruption_type, transform=train_transform, download=False)
         train_data = CIFAR10(
-            root='../data', train=True, meta=False, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
-            corruption_type=args.corruption_type, transform=train_transform, download=True, seed=args.seed)
-        test_data = CIFAR10(root='../data', train=False, transform=test_transform, download=True)
+            root=args.data_path, train=True, meta=False, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
+            corruption_type=args.corruption_type, transform=train_transform, download=False, seed=args.seed)
+        test_data = CIFAR10(root=args.data_path, train=False, transform=test_transform, download=False)
 
 
     elif args.dataset == 'cifar100':
         train_data_meta = CIFAR100(
-            root='../data', train=True, meta=True, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
-            corruption_type=args.corruption_type, transform=train_transform, download=True)
+            root=args.data_path, train=True, meta=True, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
+            corruption_type=args.corruption_type, transform=train_transform, download=False)
         train_data = CIFAR100(
-            root='../data', train=True, meta=False, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
-            corruption_type=args.corruption_type, transform=train_transform, download=True, seed=args.seed)
-        test_data = CIFAR100(root='../data', train=False, transform=test_transform, download=True)
+            root=args.data_path, train=True, meta=False, num_meta=args.num_meta, corruption_prob=args.corruption_prob,
+            corruption_type=args.corruption_type, transform=train_transform, download=False, seed=args.seed)
+        test_data = CIFAR100(root=args.data_path, train=False, transform=test_transform, download=False)
 
 
     train_loader = torch.utils.data.DataLoader(
