@@ -24,6 +24,8 @@ import random
 import numpy as np
 
 # from wideresnet import WideResNet, VNet
+from torch.utils.tensorboard import SummaryWriter
+
 from resnet import ResNet32,VNet
 from load_corrupted_data import CIFAR10, CIFAR100
 
@@ -73,6 +75,7 @@ use_cuda = True
 torch.manual_seed(args.seed)
 device = torch.device("cuda" if use_cuda else "cpu")
 
+writer = SummaryWriter(os.path.join('./log', str(time.localtime()[3]) + str(time.localtime()[4])))
 
 print()
 print(args)
@@ -256,7 +259,10 @@ def train(train_loader,train_meta_loader,model, vnet,optimizer_model,optimizer_v
                       (epoch + 1), args.epochs, batch_idx + 1, len(train_loader.dataset)/args.batch_size, (train_loss / (batch_idx + 1)),
                       (meta_loss / (batch_idx + 1)), prec_train, prec_meta))
 
-
+    writer.add_scalar('phase/train_loss',  (train_loss / (batch_idx + 1)), epoch)
+    writer.add_scalar('phase/meta_loss', (meta_loss / (batch_idx + 1)), epoch)
+    writer.add_scalar('phase/prec_train', prec_train, epoch)
+    writer.add_scalar('phase/prec_meta', prec_meta, epoch)
 
 
 train_loader, train_meta_loader, test_loader = build_dataset()
